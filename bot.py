@@ -47,6 +47,7 @@ bot = Bot(
     default=DefaultBotProperties(parse_mode=ParseMode.HTML),
 )
 
+#
 await bot.delete_webhook(drop_pending_updates=True)
 
 dp = Dispatcher()
