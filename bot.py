@@ -14,26 +14,25 @@ from handlers.user import router as user_router
 from utils.logger import setup_logger
 
 
-async def health(request: web.Request) -> web.Response:
+async def health(request):
     return web.Response(text="OK")
 
 
-async def start_healthcheck_server() -> None:
+async def start_healthcheck_server():
     app = web.Application()
     app.router.add_get("/", health)
-    app.router.add_get("/health", health)
 
     runner = web.AppRunner(app)
     await runner.setup()
 
     port = int(os.getenv("PORT", 10000))
-    site = web.TCPSite(runner, host="0.0.0.0", port=port)
+    site = web.TCPSite(runner, "0.0.0.0", port)
     await site.start()
 
-    logging.getLogger(__name__).info(f"Healthcheck server started on port {port}")
+    logging.getLogger(__name__).info(f"Health server on {port}")
 
 
-async def main() -> None:
+async def main():
     setup_logger()
     logger = logging.getLogger(__name__)
 
@@ -42,17 +41,20 @@ async def main() -> None:
 
     await start_healthcheck_server()
 
-bot = Bot(
-    token=settings.bot_token,
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-)
+    bot = Bot(
+        token=settings.bot_token,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+    )
 
-#
-await bot.delete_webhook(drop_pending_updates=True)
+    await bot.delete_webhook(drop_pending_updates=True)
 
-dp = Dispatcher()
-dp.include_router(admin_router)
-dp.include_router(user_router)
+    dp = Dispatcher()
+    dp.include_router(admin_router)
+    dp.include_router(user_router)
 
-logger.info("Бот запущен")
-await dp.start_polling(bot)
+    logger.info("Бот запущен")
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
