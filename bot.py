@@ -42,18 +42,16 @@ async def main() -> None:
 
     await start_healthcheck_server()
 
-    bot = Bot(
-        token=settings.bot_token,
-        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-    )
+bot = Bot(
+    token=settings.bot_token,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+)
 
-    dp = Dispatcher()
-    dp.include_router(admin_router)
-    dp.include_router(user_router)
+await bot.delete_webhook(drop_pending_updates=True)
 
-    logger.info("Бот запущен")
-    await dp.start_polling(bot)
+dp = Dispatcher()
+dp.include_router(admin_router)
+dp.include_router(user_router)
 
-
-if __name__ == "__main__":
-    asyncio.run(main())
+logger.info("Бот запущен")
+await dp.start_polling(bot)
