@@ -30,7 +30,7 @@ def _build_chat_payload(messages: list[dict]) -> Chat:
     ]
 
     if not giga_messages:
-        raise DeepSeekError("В запросе нет сообщений для GigaChat.")
+        raise DeepSeekError("В запросе нет сообщений для ChatGPT.")
 
     return Chat(messages=giga_messages)
 
@@ -48,18 +48,18 @@ def _sync_ask_gigachat(messages: list[dict]) -> str:
             response = giga.chat(payload)
 
         if not response or not response.choices:
-            raise DeepSeekError("GigaChat вернул пустой ответ.")
+            raise DeepSeekError("ChatGPT вернул пустой ответ.")
 
         content = (response.choices[0].message.content or "").strip()
         if not content:
-            raise DeepSeekError("GigaChat вернул пустой текст.")
+            raise DeepSeekError("ChatGPT вернул пустой текст.")
 
         return content
 
     except DeepSeekError:
         raise
     except Exception as exc:
-        raise DeepSeekError(f"Ошибка GigaChat: {exc}") from exc
+        raise DeepSeekError(f"Ошибка ChatGPT: {exc}") from exc
 
 
 async def ask_deepseek(messages: list[dict]) -> str:

@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 WELCOME_TEXT = """
-👋 <b>Добро пожаловать в DeepSeek Bot</b>
+👋 <b>Добро пожаловать в ChatGPT</b>
 
 Здесь ты можешь общаться с нейросетью прямо в Telegram.
 Доступ открывается только после активации специального кода.
@@ -164,7 +164,7 @@ async def process_access_code(message: Message, state: FSMContext) -> None:
     await state.clear()
 
     await message.answer(
-        "🎉 <b>Доступ успешно активирован!</b>\n\nТеперь можешь просто отправлять сообщения, и я передам их в DeepSeek.",
+        "🎉 <b>Доступ успешно активирован!</b>\n\nТеперь можешь просто отправлять сообщения ChatGPT.",
         reply_markup=user_main_kb(True),
     )
 
@@ -225,10 +225,10 @@ async def handle_chat(message: Message) -> None:
     try:
         answer = await ask_deepseek(messages)
     except DeepSeekError as exc:
-        await message.answer(f"⚠️ {html.escape(str(exc))}")
+        await message.answer("⚠️ {html.escape(str(exc))}")
         return
     except Exception:
-        logger.exception("Неожиданная ошибка при общении с DeepSeek")
+        logger.exception("Неожиданная ошибка при общении с ChatGPT")
         await message.answer("⚠️ Произошла непредвиденная ошибка. Попробуй позже.")
         return
 
